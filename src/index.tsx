@@ -40,10 +40,14 @@ const endpoint = 'https://api.github.com/users/ossan-engineer';
 const Root = () => {
   const [user, setUser] = useState<User | null>(null);
 
+  const getUser = async () => {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    setUser(data);
+  };
+
   useEffect(() => {
-    fetch(endpoint)
-      .then(response => response.json())
-      .then(data => setUser(data));
+    getUser();
   }, []);
   return (
     user && (
