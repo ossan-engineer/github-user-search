@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { ChangeEvent, useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 type User = {
@@ -35,28 +35,51 @@ type User = {
   url: string;
 };
 
-const endpoint = 'https://api.github.com/users/ossan-engineer';
+const baseUrl = 'https://api.github.com/users';
 
 const Root = () => {
+  const [userName, setUserName] = useState('ossan-engineer');
   const [user, setUser] = useState<User | null>(null);
 
-  const getUser = async () => {
-    const response = await fetch(endpoint);
+  const inputRef = useRef<any>(null);
+
+  const getUser = async (route: string) => {
+    const response = await fetch(`${baseUrl}/${route}`);
     const data = await response.json();
     setUser(data);
   };
 
-  useEffect(() => {
-    getUser();
-  }, []);
+  const handleChamgeName = (e: ChangeEvent<HTMLInputElement>) =>
+    setUserName(e.target.value);
+
+  const handleClear = () => {
+    setUserName('');
+    inputRef.current.focus();
+  };
+
+  // useEffect(() => {
+  //   getUser(userName);
+  // }, [userName]);
+
   return (
-    user && (
-      <div>
-        <h2>{user.name}</h2>
-        <p>{user.bio}</p>
-        <img src={user.avatar_url} alt="avatar" style={{ height: 50 }} />
-      </div>
-    )
+    <>
+      <input
+        onChange={handleChamgeName}
+        type="text"
+        placeholder="Input name"
+        value={userName}
+        ref={inputRef}
+      />
+      <button onClick={() => getUser(userName)}>Search</button>
+      <button onClick={handleClear}>Clear</button>
+      {user && (
+        <div>
+          <h2>{user.name}</h2>
+          <p>{user.bio}</p>
+          <img src={user.avatar_url} alt="avatar" style={{ height: 50 }} />
+        </div>
+      )}
+    </>
   );
 };
 const rootNode = document.getElementById('root');
