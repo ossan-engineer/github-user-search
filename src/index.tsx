@@ -57,9 +57,9 @@ const Root = () => {
     inputRef.current.focus();
   };
 
-  // useEffect(() => {
-  //   getUser(userName);
-  // }, [userName]);
+  useEffect(() => {
+    getUser(userName);
+  }, [userName]);
 
   return (
     <>
@@ -70,9 +70,8 @@ const Root = () => {
         value={userName}
         ref={inputRef}
       />
-      <button onClick={() => getUser(userName)}>Search</button>
       <button onClick={handleClear}>Clear</button>
-      {user && (
+      {user && user.name && (
         <div>
           <h2>{user.name}</h2>
           <p>{user.bio}</p>
